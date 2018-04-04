@@ -4,13 +4,15 @@ import { create } from '../src/index';
 const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout));
 
 describe('effects', () => {
-  it('put action', (done) => {
+  it('put action', done => {
     const app = create();
     app.model({
       namespace: 'count',
       state: 0,
       reducers: {
-        add(state, { payload }) { return state + payload || 1; },
+        add(state, { payload }) {
+          return state + payload || 1;
+        },
       },
       effects: {
         *addDelay({ payload }, { put, call }) {
@@ -28,13 +30,15 @@ describe('effects', () => {
     }, 200);
   });
 
-  it('put action with namespace will get a warning', (done) => {
+  it('put action with namespace will get a warning', done => {
     const app = create();
     app.model({
       namespace: 'count',
       state: 0,
       reducers: {
-        add(state, { payload }) { return state + payload || 1; },
+        add(state, { payload }) {
+          return state + payload || 1;
+        },
       },
       effects: {
         *addDelay({ payload }, { put, call }) {
@@ -52,13 +56,15 @@ describe('effects', () => {
     }, 200);
   });
 
-  it('take', (done) => {
+  it('take', done => {
     const app = create();
     app.model({
       namespace: 'count',
       state: 0,
       reducers: {
-        add(state, { payload }) { return state + payload || 1; },
+        add(state, { payload }) {
+          return state + payload || 1;
+        },
       },
       effects: {
         *addDelay({ payload }, { put, call }) {
@@ -87,7 +93,9 @@ describe('effects', () => {
       namespace: 'loading',
       state: false,
       reducers: {
-        show() { return true; },
+        show() {
+          return true;
+        },
       },
     });
     app.model({
@@ -108,6 +116,7 @@ describe('effects', () => {
     const errors = [];
     const app = create({
       onError: (error, dispatch) => {
+        error.preventDefault();
         errors.push(error.message);
         dispatch({ type: 'count/add' });
       },
@@ -116,7 +125,9 @@ describe('effects', () => {
       namespace: 'count',
       state: 0,
       reducers: {
-        add(state, { payload }) { return state + payload || 1; },
+        add(state, { payload }) {
+          return state + payload || 1;
+        },
       },
       effects: {
         *addDelay({ payload }, { put }) {
@@ -136,20 +147,25 @@ describe('effects', () => {
     expect(app._store.getState().count).toEqual(3);
   });
 
-  it('type: takeLatest', (done) => {
+  it('type: takeLatest', done => {
     const app = create();
     const takeLatest = { type: 'takeLatest' };
     app.model({
       namespace: 'count',
       state: 0,
       reducers: {
-        add(state, { payload }) { return state + payload || 1; },
+        add(state, { payload }) {
+          return state + payload || 1;
+        },
       },
       effects: {
-        addDelay: [function*({ payload }, { call, put }) {
-          yield call(delay, 100);
-          yield put({ type: 'add', payload });
-        }, takeLatest],
+        addDelay: [
+          function*({ payload }, { call, put }) {
+            yield call(delay, 100);
+            yield put({ type: 'add', payload });
+          },
+          takeLatest,
+        ],
       },
     });
     app.start();
@@ -170,7 +186,12 @@ describe('effects', () => {
       namespace: 'count',
       state: 0,
       effects: {
-        addDelay: [function*() { console.log(1); }, { type: 'throttle' }],
+        addDelay: [
+          function*() {
+            console.log(1);
+          },
+          { type: 'throttle' },
+        ],
       },
     });
     expect(() => {
@@ -178,19 +199,24 @@ describe('effects', () => {
     }).toThrow(/app.start: opts.ms should be defined if type is throttle/);
   });
 
-  it('type: throttle', (done) => {
+  it('type: throttle', done => {
     const app = create();
     app.model({
       namespace: 'count',
       state: 0,
       reducers: {
-        add(state, { payload }) { return state + payload || 1; },
+        add(state, { payload }) {
+          return state + payload || 1;
+        },
       },
       effects: {
-        addDelay: [function*({ payload }, { call, put }) {
-          yield call(delay, 100);
-          yield put({ type: 'add', payload });
-        }, { type: 'throttle', ms: 100 }],
+        addDelay: [
+          function*({ payload }, { call, put }) {
+            yield call(delay, 100);
+            yield put({ type: 'add', payload });
+          },
+          { type: 'throttle', ms: 100 },
+        ],
       },
     });
     app.start();
@@ -205,23 +231,28 @@ describe('effects', () => {
     }, 200);
   });
 
-  it('type: watcher', (done) => {
+  it('type: watcher', done => {
     const watcher = { type: 'watcher' };
     const app = create();
     app.model({
       namespace: 'count',
       state: 0,
       reducers: {
-        add(state, { payload }) { return state + payload || 1; },
+        add(state, { payload }) {
+          return state + payload || 1;
+        },
       },
       effects: {
-        addWatcher: [function*({ take, put, call }) {
-          while (true) {
-            const { payload } = yield take('addWatcher');
-            yield call(delay, 100);
-            yield put({ type: 'add', payload });
-          }
-        }, watcher],
+        addWatcher: [
+          function*({ take, put, call }) {
+            while (true) {
+              const { payload } = yield take('addWatcher');
+              yield call(delay, 100);
+              yield put({ type: 'add', payload });
+            }
+          },
+          watcher,
+        ],
       },
     });
     app.start();
@@ -242,16 +273,23 @@ describe('effects', () => {
       namespace: 'count',
       state: 0,
       effects: {
-        addDelay: [function*() { console.log(1); }, { type: 'nonvalid' }],
+        addDelay: [
+          function*() {
+            console.log(1);
+          },
+          { type: 'nonvalid' },
+        ],
       },
     });
 
     expect(() => {
       app.start();
-    }).toThrow(/app.start: effect type should be takeEvery, takeLatest, throttle or watcher/);
+    }).toThrow(
+      /app.start: effect type should be takeEvery, takeLatest, throttle or watcher/
+    );
   });
 
-  it('onEffect', (done) => {
+  it('onEffect', done => {
     const SHOW = '@@LOADING/SHOW';
     const HIDE = '@@LOADING/HIDE';
 
@@ -302,7 +340,9 @@ describe('effects', () => {
       namespace: 'count',
       state: 0,
       reducers: {
-        add(state) { return state + 1; },
+        add(state) {
+          return state + 1;
+        },
       },
       effects: {
         *addRemote(action, { put }) {
@@ -329,13 +369,15 @@ describe('effects', () => {
     }, 200);
   });
 
-  it('return Promise', (done) => {
+  it('return Promise', done => {
     const app = create();
     app.model({
       namespace: 'count',
       state: 0,
       reducers: {
-        add(state, { payload }) { return state + payload || 1; },
+        add(state, { payload }) {
+          return state + payload || 1;
+        },
       },
       effects: {
         *addDelay({ payload }, { put, call, select }) {
@@ -357,11 +399,10 @@ describe('effects', () => {
     expect(p1 instanceof Promise).toEqual(true);
     expect(p2).toEqual({ type: 'count/add', payload: 2 });
     expect(app._store.getState().count).toEqual(2);
-    p1.then((count) => {
+    p1.then(count => {
       expect(count).toEqual(4);
       expect(app._store.getState().count).toEqual(4);
       done();
     });
   });
 });
-

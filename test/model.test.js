@@ -27,8 +27,7 @@ describe('app.model', () => {
           return [...state, payload];
         },
       },
-      effects: {
-      },
+      effects: {},
       subscriptions: {
         setup() {
           count += 1;
@@ -47,7 +46,7 @@ describe('app.model', () => {
     expect(state.tasks).toEqual(['foo']);
   });
 
-  it('don\'t inject if exists', () => {
+  it("don't inject if exists", () => {
     const app = create();
 
     const model = {
@@ -74,14 +73,18 @@ describe('app.model', () => {
       namespace: 'a',
       state: 0,
       reducers: {
-        add(state) { return state + 1; },
+        add(state) {
+          return state + 1;
+        },
       },
     });
     app.model({
       namespace: 'b',
       state: 0,
       reducers: {
-        add(state) { return state + 1; },
+        add(state) {
+          return state + 1;
+        },
       },
       effects: {
         *addBoth(action, { put }) {
@@ -91,7 +94,9 @@ describe('app.model', () => {
       },
       subscriptions: {
         setup() {
-          emitter.on('event', () => { emitterCount += 1; });
+          emitter.on('event', () => {
+            emitterCount += 1;
+          });
           return () => {
             emitter.removeAllListeners();
           };
@@ -111,7 +116,7 @@ describe('app.model', () => {
     expect({ a, b }).toEqual({ a: 0, b: undefined });
   });
 
-  it('don\'t run saga when effects is not provided', () => {
+  it("don't run saga when effects is not provided", () => {
     let count = 0;
 
     const app = create();
@@ -163,7 +168,9 @@ describe('app.model', () => {
       namespace: 'a',
       state: 0,
       reducers: {
-        add(state) { return state + 1; },
+        add(state) {
+          return state + 1;
+        },
       },
     });
     app.start();
@@ -172,7 +179,9 @@ describe('app.model', () => {
       namespace: 'b',
       state: 0,
       reducers: {
-        add(state) { return state + 1; },
+        add(state) {
+          return state + 1;
+        },
       },
       effects: {
         *addBoth(action, { put }) {
@@ -189,7 +198,7 @@ describe('app.model', () => {
     expect({ a, b }).toEqual({ a: 1, b: undefined });
   });
 
-  it('unmodel, warn user if subscription don\'t return function', () => {
+  it("unmodel, warn user if subscription don't return function", () => {
     const app = create();
     app.model({
       namespace: 'a',
@@ -213,15 +222,33 @@ describe('app.model', () => {
       namespace: 'a',
       state: 0,
       effects: {
-        a: [function*() { countA += 1; }, { type: 'throttle', ms: 100 }],
-        b: [function*() { countB += 1; }, { type: 'takeEvery' }],
-        c: [function*() { countC += 1; }, { type: 'takeLatest' }],
-        d: [function*({ take }) {
-          while (true) {
-            yield take('a/d');
-            countD += 1;
-          }
-        }, { type: 'watcher' }],
+        a: [
+          function*() {
+            countA += 1;
+          },
+          { type: 'throttle', ms: 100 },
+        ],
+        b: [
+          function*() {
+            countB += 1;
+          },
+          { type: 'takeEvery' },
+        ],
+        c: [
+          function*() {
+            countC += 1;
+          },
+          { type: 'takeLatest' },
+        ],
+        d: [
+          function*({ take }) {
+            while (true) {
+              yield take('a/d');
+              countD += 1;
+            }
+          },
+          { type: 'watcher' },
+        ],
       },
     });
 

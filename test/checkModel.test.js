@@ -58,7 +58,9 @@ describe('checkModel', () => {
         namespace: '_none',
         reducers: [],
       });
-    }).toThrow(/\[app\.model\] reducers with array should be \[Object, Function\]/);
+    }).toThrow(
+      /\[app\.model\] reducers with array should be \[Object, Function\]/
+    );
   });
 
   it('subscriptions should be plain object', () => {

@@ -16,9 +16,14 @@ describe('reducers', () => {
     app.model({
       namespace: 'count',
       state: 3,
-      reducers: [{
-        add(state, { payload }) { return state + (payload || 1); },
-      }, enhancer],
+      reducers: [
+        {
+          add(state, { payload }) {
+            return state + (payload || 1);
+          },
+        },
+        enhancer,
+      ],
     });
     app.start();
 
@@ -76,7 +81,9 @@ describe('reducers', () => {
       namespace: 'count',
       state: 0,
       reducers: {
-        add(state) { return state + 1; },
+        add(state) {
+          return state + 1;
+        },
       },
     });
     app.start();
@@ -104,7 +111,9 @@ describe('reducers', () => {
       namespace: 'count',
       state: 0,
       reducers: {
-        update(state) { return state + 1; },
+        update(state) {
+          return state + 1;
+        },
       },
     });
     app.start();

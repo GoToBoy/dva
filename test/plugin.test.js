@@ -13,19 +13,29 @@ describe('plugin', () => {
     const plugin = new Plugin();
 
     plugin.use({
-      onHmr: (x) => { hmrCount += 1 * x; },
+      onHmr: x => {
+        hmrCount += 1 * x;
+      },
       onStateChange: 2,
       onAction: 1,
       extraReducers: { form: 1 },
-      onReducer: (r) => {
-        return (state, action) => { const res = r(state, action); return res + 1; };
+      onReducer: r => {
+        return (state, action) => {
+          const res = r(state, action);
+          return res + 1;
+        };
       },
     });
     plugin.use({
-      onHmr: (x) => { hmrCount += 2 + x; },
+      onHmr: x => {
+        hmrCount += 2 + x;
+      },
       extraReducers: { user: 2 },
-      onReducer: (r) => {
-        return (state, action) => { const res = r(state, action); return res * 2; };
+      onReducer: r => {
+        return (state, action) => {
+          const res = r(state, action);
+          return res * 2;
+        };
       },
     });
 

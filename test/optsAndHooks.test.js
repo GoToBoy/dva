@@ -6,15 +6,19 @@ function delay(timeout) {
 }
 
 describe('opts and hooks', () => {
-  it('basic', (done) => {
+  it('basic', done => {
     const app = create();
 
     app.model({
       namespace: 'loading',
       state: false,
       reducers: {
-        show() { return true; },
-        hide() { return false; },
+        show() {
+          return true;
+        },
+        hide() {
+          return false;
+        },
       },
     });
 
@@ -61,7 +65,7 @@ describe('opts and hooks', () => {
     }, 500);
   });
 
-  it('opts.onError prevent reject error', (done) => {
+  it('opts.onError prevent reject error', done => {
     let rejectCount = 0;
     const app = create({
       onError(e) {
@@ -78,11 +82,13 @@ describe('opts and hooks', () => {
       },
     });
     app.start();
-    app._store.dispatch({
-      type: 'count/add',
-    }).catch(() => {
-      rejectCount += 1;
-    });
+    app._store
+      .dispatch({
+        type: 'count/add',
+      })
+      .catch(() => {
+        rejectCount += 1;
+      });
 
     setTimeout(() => {
       expect(rejectCount).toEqual(0);
@@ -120,11 +126,11 @@ describe('opts and hooks', () => {
 
   it('opts.onAction with array', () => {
     let count;
-    const countMiddleware = () => next => (action) => {
+    const countMiddleware = () => next => action => {
       count += 1;
       next(action);
     };
-    const count2Middleware = () => next => (action) => {
+    const count2Middleware = () => next => action => {
       count += 2;
       next(action);
     };
@@ -141,10 +147,14 @@ describe('opts and hooks', () => {
 
   it('opts.extraEnhancers', () => {
     let count = 0;
-    const countEnhancer = storeCreator => (reducer, preloadedState, enhancer) => {
+    const countEnhancer = storeCreator => (
+      reducer,
+      preloadedState,
+      enhancer
+    ) => {
       const store = storeCreator(reducer, preloadedState, enhancer);
       const oldDispatch = store.dispatch;
-      store.dispatch = (action) => {
+      store.dispatch = action => {
         count += 1;
         oldDispatch(action);
       };

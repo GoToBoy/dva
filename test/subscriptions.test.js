@@ -8,7 +8,9 @@ describe('subscriptions', () => {
       namespace: 'count',
       state: 0,
       reducers: {
-        add(state, { payload }) { return state + payload || 1; },
+        add(state, { payload }) {
+          return state + payload || 1;
+        },
       },
       subscriptions: {
         setup({ dispatch }) {
@@ -26,7 +28,9 @@ describe('subscriptions', () => {
       namespace: 'count',
       state: 0,
       reducers: {
-        add(state, { payload }) { return state + payload || 1; },
+        add(state, { payload }) {
+          return state + payload || 1;
+        },
       },
       subscriptions: {
         setup({ dispatch }) {
@@ -60,7 +64,9 @@ describe('subscriptions', () => {
       namespace: 'loading',
       state: false,
       reducers: {
-        show() { return true; },
+        show() {
+          return true;
+        },
       },
     });
     app.model({
@@ -79,7 +85,7 @@ describe('subscriptions', () => {
   it('onError', () => {
     const errors = [];
     const app = create({
-      onError: (error) => {
+      onError: error => {
         errors.push(error.message);
       },
     });
@@ -96,10 +102,10 @@ describe('subscriptions', () => {
     expect(errors).toEqual(['subscription error']);
   });
 
-  it('onError async', (done) => {
+  it('onError async', done => {
     const errors = [];
     const app = create({
-      onError: (error) => {
+      onError: error => {
         errors.push(error.message);
       },
     });
